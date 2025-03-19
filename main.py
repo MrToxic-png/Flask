@@ -255,6 +255,32 @@ def choice(planet_name):
                     </h5>
                     </body>'''
 
+@app.route('/results/<nickname>/<int:level>/<float:rating>')
+def results(nickname, level, rating):
+    return f'''<!DOCTYPE HTML>
+                    <head>
+                    <meta charset="utf-8">
+                    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+                    <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/style.css')}">
+                    </head>
+                    <body>
+                    <h1 class="alert alert-heading" role="alert">
+                    Результаты отбора
+                    </h1>
+                    <h2 class="alert alert-heading" role="alert">
+                    претенденты на участие {nickname}:
+                    </h2>
+                    <h3 class="alert alert-secondary" role="alert">
+                    Поздравляем! ваш рейтинг после {level} этапа
+                    </h3>
+                    <h4 class="alert alert-primary" role="alert">
+                    составляет {rating}
+                    </h4>
+                    <h5 class="alert alert-secondary" role="alert">
+                    Удачи!
+                    </h5>
+                    </body>'''
+
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
