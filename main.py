@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, url_for, request
 
 app = Flask(__name__)
@@ -79,7 +81,7 @@ def astronaut_selection():
                             href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
                             integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
                             crossorigin="anonymous">
-            <link href="{{ url_for('static', filename='css/forum_style.css') }}" rel="stylesheet">
+            <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
             </head>
             <body>
             <h1>
@@ -280,6 +282,43 @@ def results(nickname, level, rating):
                     Удачи!
                     </h5>
                     </body>'''
+
+
+@app.route('/load_photo', methods=['GET', 'POST'])
+def load_photo():
+    if request.method == 'POST':
+        if request.files.get('file'):
+            with open(os.path.join(os.getcwd(), 'static/img/loaded_image.png'), 'wb') as file:
+                file.write(request.files.get('file').read())
+    return f'''<!doctype html>
+                <html lang="en">
+                  <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+                    <link rel="stylesheet"
+                    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+                    integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+                    crossorigin="anonymous">
+                    <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/style.css')}" />
+                    <title>Отбор</title>
+                  </head>
+                  <body>
+                    <h1>Загрузка фото</h1>
+                    <h2>для участии в миссии</h2>
+                    <div>
+                        <form class="login_form" method="POST" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="photo">Приложите фотографию</label>
+                                <input type="file" class="form-control-file" id="photo" name="file">
+                            </div>
+                            <div>
+                            <img src="{url_for('static', filename='img/loaded_image.png')}" alt="будет фото">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Отправить</button>
+                        </form>
+                        </div>
+                  </body>
+                </html>'''
 
 
 if __name__ == '__main__':
