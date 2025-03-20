@@ -16,6 +16,7 @@ class LoginForm(FlaskForm):
     captain_password = PasswordField('Пароль капитана', validators=[DataRequired()])
     submit = SubmitField('Доступ')
 
+
 @app.route('/index/<title>')
 def index(title):
     return render_template('base.html', title=title)
@@ -46,6 +47,7 @@ def anwser():
     }
     return render_template('auto_answer.html', **slowar)
 
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -53,10 +55,22 @@ def login():
         return redirect('/submit')
     return render_template('login.html', form=form)
 
+
 @app.route('/submit')
 def submit():
     return 'ptichka'
 
+
+
+@app.route('/distribution')
+def distribution():
+    team = [
+        'Igor-mashina',
+        'KiReal',
+        'Forevery',
+        'Semen-dep'
+    ]
+    return render_template('distribution.html', team=team)
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
