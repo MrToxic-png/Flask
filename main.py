@@ -1,9 +1,20 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, request
+
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms.validators import DataRequired
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'my_wtf_key'
 
+
+class LoginForm(FlaskForm):
+    astronaut_id = StringField('Id астронавта', validators=[DataRequired()])
+    astronaut_password = PasswordField('Пароль астронавта', validators=[DataRequired()])
+    captain_id = StringField('Id капитана', validators=[DataRequired()])
+    captain_password = PasswordField('Пароль капитана', validators=[DataRequired()])
+    submit = SubmitField('Доступ')
 
 @app.route('/index/<title>')
 def index(title):
@@ -34,6 +45,17 @@ def anwser():
         'ready': True
     }
     return render_template('auto_answer.html', **slowar)
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        return redirect('/submit')
+    return render_template('login.html', form=form)
+
+@app.route('/submit')
+def submit():
+    return 'ptichka'
 
 
 if __name__ == '__main__':
