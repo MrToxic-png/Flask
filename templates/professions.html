@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% set prof = ('нн какой то', 'уъу', 'повар спрашивает у повара...', 'еще чет') %}
+
+    <h2>
+    Список
+    </h2>
+
+    {% if lst == 'ol' %}
+        <ol>
+            {% for i in prof %}
+            <li>
+                {{ i }}
+            </li>
+            {% endfor %}
+        </ol>
+    {% elif lst == 'ul' %}
+        <ul>
+            {% for i in prof %}
+            <li>
+                {{ i }}
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div>
+            Неверный параметр
+        </div>
+    {% endif %}
+{% endblock %}

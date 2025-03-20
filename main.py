@@ -13,6 +13,10 @@ def index(title):
 def training(prof):
     return render_template('training.html', prof=prof)
 
+@app.route('/list_prof/<lst>')
+def list_prof(lst):
+    return render_template('professions.html', lst=lst)
+
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
