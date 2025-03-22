@@ -1,4 +1,6 @@
+import json
 import os
+import random
 
 from flask import Flask, render_template, redirect, request
 
@@ -96,6 +98,7 @@ def table(sex_first, age_first):
 
 a = os.getcwd()
 
+
 @app.route('/carousel', methods=['GET', 'POST'])
 def carousel():
     form = AddImageForm()
@@ -104,6 +107,13 @@ def carousel():
         data.save(os.path.join(a, 'static/img/carousel', data.filename))
         return redirect('/carousel')
     return render_template('carousel.html', images=os.listdir(os.path.join(a, 'static/img/carousel')), form=form)
+
+
+@app.route('/member')
+def member():
+    with open('templates/crew.json', 'rb') as f:
+        crew = json.load(f)
+    return render_template('member.html', member=random.choice(crew))
 
 
 if __name__ == '__main__':

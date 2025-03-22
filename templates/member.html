@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <div>
+        <h2>
+            {{ member['name'] }} {{ member['surname'] }}
+        </h2>
+        <img src="{{ url_for('static', filename=member['image']) }}">
+        <p>{{ ', '.join(member['jobs'] | sort) }}</p>
+    </div>
+{% endblock %}

@@ -1,0 +1,41 @@
+[
+  {
+    "name": "KiReal",
+    "surname": "ТУРИЛИН",
+    "image": "img/KiReal_0.png",
+    "jobs": [
+      "Пилот",
+      "Повар",
+      "НЕПРОГРАММИСТ"
+    ]
+  },
+  {
+    "name": "Игорь",
+    "surname": "Машина",
+    "image": "img/KiReal_1.png",
+    "jobs": [
+      "Программист",
+      "Инженер"
+    ]
+  },
+  {
+    "name": "Семен",
+    "surname": "додеп",
+    "image": "img/ship.png",
+    "jobs": [
+      "Механик",
+      "Программист",
+      "Сварщик"
+    ]
+  },
+  {
+    "name": "Forevery",
+    "surname": "every",
+    "image": "img/mars.png",
+    "jobs": [
+      "Строитель",
+      "Врач",
+      "Метеоролог"
+    ]
+  }
+]
