@@ -1,12 +1,20 @@
+import os
+
 from flask import Flask, render_template, redirect, request
 
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'my_wtf_key'
+
+
+class AddImageForm(FlaskForm):
+    image = FileField('Выберите файл', validators=[DataRequired()])
+    submit = SubmitField('Отправить')
 
 
 class LoginForm(FlaskForm):
@@ -61,7 +69,6 @@ def submit():
     return 'ptichka'
 
 
-
 @app.route('/distribution')
 def distribution():
     team = [
@@ -71,6 +78,7 @@ def distribution():
         'Semen-dep'
     ]
     return render_template('distribution.html', team=team)
+
 
 @app.route('/table/<sex_first>/<int:age_first>')
 def table(sex_first, age_first):
@@ -84,6 +92,19 @@ def table(sex_first, age_first):
         sex = 0
 
     return render_template('table.html', sex=sex, age=age)
+
+
+a = os.getcwd()
+
+@app.route('/carousel', methods=['GET', 'POST'])
+def carousel():
+    form = AddImageForm()
+    if form.validate_on_submit():
+        data = form.image.data
+        data.save(os.path.join(a, 'static/img/carousel', data.filename))
+        return redirect('/carousel')
+    return render_template('carousel.html', images=os.listdir(os.path.join(a, 'static/img/carousel')), form=form)
+
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
