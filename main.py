@@ -72,5 +72,18 @@ def distribution():
     ]
     return render_template('distribution.html', team=team)
 
+@app.route('/table/<sex_first>/<int:age_first>')
+def table(sex_first, age_first):
+    if age_first < 21:
+        age = 0
+    else:
+        age = 1
+    if sex_first.lower() == 'male':
+        sex = 2
+    else:
+        sex = 0
+
+    return render_template('table.html', sex=sex, age=age)
+
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')

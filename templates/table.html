@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% set oform = sex + age %}
+
+<h3>Оформление каюты</h3>
+<table>
+    <thead>
+    <tr>
+        <th>Цвет стен</th>
+        <th>Эмблема</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><img src="{{ url_for('static', filename='img/color_{}.png'.format(oform)) }}"></td>
+        <td><img src="{{ url_for('static', filename='img/KiReal_{}.png'.format(age)) }}"></td>
+    </tr>
+    </tbody>
+</table>
+{% endblock %}
