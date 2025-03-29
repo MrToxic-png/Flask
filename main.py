@@ -15,21 +15,14 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 def main():
     db_session.global_init("db/mars_explorer.db")
-    # тута 3 задание начинается
+    app.run('127.0.0.1', port=8080)
 
-    """user = User(surname='Лудоман', name='Семен', age=0, position='я хз сколько ему', speciality='programmer',
-                address='module_0', email='semuk@git.hub')
-    db_sess = db_session.create_session()
-    db_sess.add(user)
-    db_sess.commit()"""
 
-    # тута 4 задание начинается
-
-    """job = Job(team_leader=1, job='deployment of residential modules 1 and 2', work_size=15, collaborators='2, 3',
-              start_date=datetime.datetime.now(), is_finished=False)
-    db_sess = db_session.create_session()
-    db_sess.add(job)
-    db_sess.commit()"""
+@app.route('/')
+def home():
+    session = db_session.create_session()
+    jobs = session.query(Job).all()
+    return render_template('home.html', jobs=jobs)
 
 
 if __name__ == '__main__':
