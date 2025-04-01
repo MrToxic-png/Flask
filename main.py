@@ -1,7 +1,7 @@
 import sqlalchemy
 from flask import Flask, render_template, redirect
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, IntegerField, SubmitField, EmailField, BooleanField
+from wtforms import StringField, PasswordField, IntegerField, SubmitField, EmailField, BooleanField, DateField
 from wtforms.validators import DataRequired, EqualTo, Email
 from flask_login import LoginManager, login_user
 
@@ -39,6 +39,15 @@ class LoginForm(FlaskForm):
     password = PasswordField('Пароль', validators=[DataRequired()])
     remember_me = BooleanField('Запомнить меня')
     submit = SubmitField('Войти')
+
+
+class AddJobForm(FlaskForm):
+    team_lead = IntegerField('Id лидера', validators=[DataRequired()])
+    job = StringField('Работа', validators=[DataRequired()])
+    work_size = IntegerField('Количесво часов', validators=[DataRequired()])
+    collaborators = StringField('Список id рабочих', validators=[DataRequired()])
+    is_finished = BooleanField('Работа закончена?')
+    submit = SubmitField('Добавить')
 
 
 @app.route('/')
