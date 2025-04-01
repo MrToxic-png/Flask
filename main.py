@@ -11,6 +11,8 @@ from data import db_session
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+is_athorised = False
+username = 'Log in!'
 
 db_session.global_init("db/mars_explorer.db")
 session = db_session.create_session()
@@ -41,12 +43,18 @@ class LoginForm(FlaskForm):
 
 @app.route('/')
 def home():
-    jobs = session.query(Jobs).all()
-    return render_template('home.html', jobs=jobs)
+    global is_athorised
+    global username
+    if is_athorised:
+        jobs = session.query(Jobs).all()
+        return render_template('home.html', username=username, jobs=jobs)
+    else:
+        return redirect('/login')
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    global username
     form = RegisterForm()
     if form.validate_on_submit():
         try:
@@ -64,12 +72,13 @@ def register():
             user.set_password(password)
             session.add(user)
             session.commit()
+            username = name
             return redirect('/')
         except sqlalchemy.exc.IntegrityError:
             session.rollback()
             return redirect('/register')
 
-    return render_template('register.html', form=form)
+    return render_template('register.html', username=username, form=form)
 
 
 @login_manager.user_loader
@@ -80,17 +89,21 @@ def load_user(user_id):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    global username
     form = LoginForm()
     if form.validate_on_submit():
         db_sess = db_session.create_session()
         user = db_sess.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
+            global is_athorised
+            is_athorised = True
+            username = user.name
             return redirect("/")
         return render_template('login.html',
                                message="Неправильный логин или пароль",
                                form=form)
-    return render_template('login.html', title='Авторизация', form=form)
+    return render_template('login.html', title='Авторизация', username=username, form=form)
 
 
 if __name__ == '__main__':
