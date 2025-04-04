@@ -11,7 +11,6 @@ from data import db_session
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
-is_athorised = False
 username = None
 
 db_session.global_init("db/mars_explorer.db")
@@ -52,8 +51,8 @@ class AddJobForm(FlaskForm):
 
 @app.route('/')
 def home():
-    global username, is_athorised
-    if is_athorised:
+    global username
+    if current_user.is_authenticated:
         jobs = session.query(Jobs).all()
         return render_template('home.html', username=username, jobs=jobs, user=current_user)
     else:
@@ -62,7 +61,7 @@ def home():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    global username, is_athorised
+    global username
     form = RegisterForm()
     if form.validate_on_submit():
         try:
@@ -96,28 +95,25 @@ def load_user(user_id):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    global username, is_athorised
+    global username
     logout_user()
     form = LoginForm()
     if form.validate_on_submit():
         user = session.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            is_athorised = True
             username = user.name + ' ' + user.surname
             return redirect("/")
         return render_template('login.html',
                                message="Неправильный логин или пароль",
                                form=form)
 
-    print(current_user.is_authenticated)
-
     return render_template('login.html', title='Авторизация', username=username, form=form, user=current_user)
 
 
 @app.route('/addjob', methods=['GET', 'POST'])
 def addjob():
-    global username, is_athorised
+    global username
     if not username:
         return redirect('/login')
     form = AddJobForm()
@@ -127,6 +123,12 @@ def addjob():
         session.add(new_job)
         session.commit()
         return redirect('/')
+    return render_template('addjob.html', username=username, form=form, user=current_user)
+
+
+@app.route('/editjob', methods=['GET', 'POST'])
+def editjob():
+    form = AddJobForm()
     return render_template('addjob.html', username=username, form=form, user=current_user)
 
 
