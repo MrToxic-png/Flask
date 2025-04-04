@@ -1,9 +1,9 @@
 import sqlalchemy
 from flask import Flask, render_template, redirect
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, IntegerField, SubmitField, EmailField, BooleanField, DateField
+from wtforms import StringField, PasswordField, IntegerField, SubmitField, EmailField, BooleanField
 from wtforms.validators import DataRequired, EqualTo, Email
-from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user, current_user, logout_user
 
 from data.jobs import Jobs
 from data.users import User
@@ -12,7 +12,7 @@ from data import db_session
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 is_athorised = False
-username = 'Log in!'
+username = None
 
 db_session.global_init("db/mars_explorer.db")
 session = db_session.create_session()
@@ -52,18 +52,17 @@ class AddJobForm(FlaskForm):
 
 @app.route('/')
 def home():
-    global is_athorised
-    global username
+    global username, is_athorised
     if is_athorised:
         jobs = session.query(Jobs).all()
-        return render_template('home.html', username=username, jobs=jobs)
+        return render_template('home.html', username=username, jobs=jobs, user=current_user)
     else:
         return redirect('/login')
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    global username
+    global username, is_athorised
     form = RegisterForm()
     if form.validate_on_submit():
         try:
@@ -81,13 +80,13 @@ def register():
             user.set_password(password)
             session.add(user)
             session.commit()
-            username = name
+            username = name + ' ' + surname
             return redirect('/')
         except sqlalchemy.exc.IntegrityError:
             session.rollback()
             return redirect('/register')
 
-    return render_template('register.html', username=username, form=form)
+    return render_template('register.html', username=username, form=form, user=current_user)
 
 
 @login_manager.user_loader
@@ -97,25 +96,30 @@ def load_user(user_id):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    global username
+    global username, is_athorised
+    logout_user()
     form = LoginForm()
     if form.validate_on_submit():
         user = session.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
-            global is_athorised
             is_athorised = True
-            username = user.name
+            username = user.name + ' ' + user.surname
             return redirect("/")
         return render_template('login.html',
                                message="Неправильный логин или пароль",
                                form=form)
-    return render_template('login.html', title='Авторизация', username=username, form=form)
+
+    print(current_user.is_authenticated)
+
+    return render_template('login.html', title='Авторизация', username=username, form=form, user=current_user)
 
 
 @app.route('/addjob', methods=['GET', 'POST'])
 def addjob():
-    global username
+    global username, is_athorised
+    if not username:
+        return redirect('/login')
     form = AddJobForm()
     if form.validate_on_submit():
         new_job = Jobs(team_leader=form.team_lead.data, job=form.job.data, work_size=form.work_size.data,
@@ -123,7 +127,7 @@ def addjob():
         session.add(new_job)
         session.commit()
         return redirect('/')
-    return render_template('addjob.html', username=username, form=form)
+    return render_template('addjob.html', username=username, form=form, user=current_user)
 
 
 if __name__ == '__main__':

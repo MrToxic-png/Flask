@@ -11,9 +11,9 @@
 <h1>
     миссия Колонизация Марса
 </h1>
-<h2>
-    {{ username }}
-</h2>
+{% if user.is_authenticated %}
+    <a href="/login" class="btn btn-warning">{{ username }}</a>
+{% endif %}
 <h4>
     и на Марсе будут яблони цвести!
 </h4>
