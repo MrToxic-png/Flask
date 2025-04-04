@@ -92,8 +92,7 @@ def register():
 
 @login_manager.user_loader
 def load_user(user_id):
-    db_sess = db_session.create_session()
-    return db_sess.query(User).get(user_id)
+    return session.query(User).get(user_id)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -101,8 +100,7 @@ def login():
     global username
     form = LoginForm()
     if form.validate_on_submit():
-        db_sess = db_session.create_session()
-        user = db_sess.query(User).filter(User.email == form.email.data).first()
+        user = session.query(User).filter(User.email == form.email.data).first()
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             global is_athorised
@@ -113,6 +111,19 @@ def login():
                                message="Неправильный логин или пароль",
                                form=form)
     return render_template('login.html', title='Авторизация', username=username, form=form)
+
+
+@app.route('/addjob', methods=['GET', 'POST'])
+def addjob():
+    global username
+    form = AddJobForm()
+    if form.validate_on_submit():
+        new_job = Jobs(team_leader=form.team_lead.data, job=form.job.data, work_size=form.work_size.data,
+                       collaborators=form.collaborators.data, is_finished=form.is_finished.data)
+        session.add(new_job)
+        session.commit()
+        return redirect('/')
+    return render_template('addjob.html', username=username, form=form)
 
 
 if __name__ == '__main__':
