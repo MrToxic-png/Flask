@@ -15,7 +15,7 @@
                 <tr>
                     <th>Edit/Delete</th>
                     <td><a href='{{ url_for('editdepartment', department_id=i.id) }}' class="btn btn-warning">Edit</a>
-                        <a href='{{ url_for('department', department_id=i.id) }}'
+                        <a href='{{ url_for('deletedepartment', department_id=i.id) }}'
                            class="btn btn-danger">Delete</a></td>
                 </tr>
             {% endif %}

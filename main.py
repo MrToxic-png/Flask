@@ -189,9 +189,9 @@ def editdepartment(department_id):
     form = AddDepartmentForm()
     departments = session.query(Department).filter(Department.id == department_id).first()
     if not departments:
-        return redirect('/')
+        return redirect('/departments')
     if departments.chief != current_user.id and current_user.id != 1:
-        return redirect('/')
+        return redirect('/departments')
     if form.validate_on_submit():
         departments.title = form.title.data
         departments.chief = form.chief.data
@@ -203,7 +203,16 @@ def editdepartment(department_id):
     return render_template('editdepartment.html', username=username, form=form, user=current_user)
 
 
-
+@app.route('/deletedepartment/<int:department_id>', methods=['GET', 'POST'])
+def deletedepartment(department_id):
+    departments = session.query(Department).filter(Department.id == department_id).first()
+    if not departments:
+        return redirect('/departments')
+    if departments.chief != current_user.id and current_user.id != 1:
+        return redirect('/departments')
+    session.delete(departments)
+    session.commit()
+    return redirect('/departments')
 
 
 if __name__ == '__main__':
