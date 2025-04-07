@@ -46,7 +46,7 @@ class AddJobForm(FlaskForm):
     work_size = IntegerField('Количесво часов', validators=[DataRequired()])
     collaborators = StringField('Список id рабочих', validators=[DataRequired()])
     is_finished = BooleanField('Работа закончена?')
-    submit = SubmitField('Добавить')
+    submit = SubmitField('Завершить')
 
 
 @app.route('/')
@@ -104,9 +104,7 @@ def login():
             login_user(user, remember=form.remember_me.data)
             username = user.name + ' ' + user.surname
             return redirect("/")
-        return render_template('login.html',
-                               message="Неправильный логин или пароль",
-                               form=form)
+        return render_template('login.html', message="Неправильный логин или пароль", form=form, user=current_user)
 
     return render_template('login.html', title='Авторизация', username=username, form=form, user=current_user)
 
@@ -126,10 +124,22 @@ def addjob():
     return render_template('addjob.html', username=username, form=form, user=current_user)
 
 
-@app.route('/editjob', methods=['GET', 'POST'])
-def editjob():
+@app.route('/editjob/<int:job_id>', methods=['GET', 'POST'])
+def editjob(job_id):
     form = AddJobForm()
-    return render_template('addjob.html', username=username, form=form, user=current_user)
+    jobs = session.query(Jobs).filter(Jobs.id == job_id).first()
+    if not jobs:
+        return redirect('/')
+    if form.validate_on_submit():
+        jobs.job = form.job.data
+        jobs.team_leader = form.team_lead.data
+        jobs.work_size = form.work_size.data
+        jobs.collaborators = form.collaborators.data
+        jobs.is_finished = form.is_finished.data
+        session.commit()
+        return redirect('/')
+
+    return render_template('editjob.html', username=username, form=form, user=current_user)
 
 
 if __name__ == '__main__':
