@@ -8,6 +8,7 @@ from flask_login import LoginManager, login_user, current_user, logout_user
 from data.departament import Department
 from data.jobs import Jobs
 from data.users import User
+from data.categories import Category
 from data import db_session
 
 app = Flask(__name__)
@@ -46,8 +47,10 @@ class AddJobForm(FlaskForm):
     job = StringField('Работа', validators=[DataRequired()])
     work_size = IntegerField('Количесво часов', validators=[DataRequired()])
     collaborators = StringField('Список id рабочих', validators=[DataRequired()])
+    category = IntegerField('Категория', validators=[DataRequired()])
     is_finished = BooleanField('Работа закончена?')
     submit = SubmitField('Завершить')
+
 
 class AddDepartmentForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
@@ -124,7 +127,8 @@ def addjob():
     form = AddJobForm()
     if form.validate_on_submit():
         new_job = Jobs(team_leader=form.team_lead.data, job=form.job.data, work_size=form.work_size.data,
-                       collaborators=form.collaborators.data, is_finished=form.is_finished.data)
+                       collaborators=form.collaborators.data, category=form.category.data,
+                       is_finished=form.is_finished.data)
         session.add(new_job)
         session.commit()
         return redirect('/')
@@ -144,6 +148,7 @@ def editjob(job_id):
         jobs.team_leader = form.team_lead.data
         jobs.work_size = form.work_size.data
         jobs.collaborators = form.collaborators.data
+        jobs.category = form.category.data
         jobs.is_finished = form.is_finished.data
         session.commit()
         return redirect('/')
@@ -177,7 +182,8 @@ def adddepartment():
         return redirect('/login')
     form = AddDepartmentForm()
     if form.validate_on_submit():
-        new_department = Department(title=form.title.data, chief=form.chief.data, members=form.members.data, email=form.email.data)
+        new_department = Department(title=form.title.data, chief=form.chief.data, members=form.members.data,
+                                    email=form.email.data)
         session.add(new_department)
         session.commit()
         return redirect('/departments')

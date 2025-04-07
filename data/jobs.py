@@ -3,6 +3,9 @@ import sqlalchemy.orm as orm
 
 from .db_session import SqlAlchemyBase
 
+from .users import User
+from .categories import Category
+
 
 class Jobs(SqlAlchemyBase):
     __tablename__ = 'jobs'
@@ -15,5 +18,7 @@ class Jobs(SqlAlchemyBase):
     start_date = sqlalchemy.Column(sqlalchemy.DateTime)
     end_date = sqlalchemy.Column(sqlalchemy.DateTime)
     is_finished = sqlalchemy.Column(sqlalchemy.Boolean)
+    category = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('categories.id'))
 
-    user = orm.relationship("User", backref="jobs")
+    user = orm.relationship(User, backref="jobs")
+    job_category = orm.relationship(Category, backref="jobs")

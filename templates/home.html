@@ -19,6 +19,10 @@
                 </tr>
             {% endif %}
             <tr>
+                <th>Hazard category</th>
+                <td>{% if i.job_category %}{{ i.job_category.title }}{% endif %}</td>
+            </tr>
+            <tr>
                 <th>Team leader</th>
                 <td>{% if i.user %}{{ i.user.name }}{% endif %}</td>
             </tr>
