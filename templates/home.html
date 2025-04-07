@@ -11,8 +11,8 @@
             {% if user.id == 1 or user.id == i.team_leader %}
                 <tr>
                     <th>Edit/Delete</th>
-                    <td><a href='{{ url_for('editjob', job_id=i.id) }}' class="btn btn-secondary">Изменить</a><a
-                            href='{{ url_for('deletejob', job_id=i.id) }}' class="btn btn-secondary">Удалить</a></td>
+                    <td><a href='{{ url_for('editjob', job_id=i.id) }}' class="btn btn-warning">Изменить</a>   <a
+                            href='{{ url_for('deletejob', job_id=i.id) }}' class="btn btn-danger">Удалить</a></td>
                 </tr>
             {% endif %}
             <tr>
