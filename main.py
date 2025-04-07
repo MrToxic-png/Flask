@@ -141,6 +141,10 @@ def editjob(job_id):
 
     return render_template('editjob.html', username=username, form=form, user=current_user)
 
+@app.route('/deletejob/<int:job_id>', methods=['GET', 'POST'])
+def deletejob(job_id):
+    pass
+
 
 if __name__ == '__main__':
     app.run('127.0.0.1', port=8080)

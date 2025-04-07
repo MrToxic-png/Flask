@@ -2,35 +2,36 @@
 {% block content %}
     <h2>Works log</h2>
     {% for i in jobs %}
-    <table class="table">
-        <tbody>
-        <tr>
-            <th>Title of activity</th>
-            <td>{{ i.job }}</td>
-        </tr>
-        {% if user.id == 1 or user.id == i.team_leader %}
+        <table class="table">
+            <tbody>
             <tr>
-                <th>Edit</th>
-                <td><a href='{{ url_for('editjob', job_id=i.id) }}' class="btn btn-secondary">Изменить</a></td>
+                <th>Title of activity</th>
+                <td>{{ i.job }}</td>
             </tr>
-        {% endif %}
-        <tr>
-            <th>Team leader</th>
-            <td>{% if i.user %}{{ i.user.name }}{% endif %}</td>
-        </tr>
-        <tr>
-            <th>Duration</th>
-            <td>{{ i.work_size }} hours</td>
-        </tr>
-        <tr>
-            <th>List of collaborators</th>
-            <td>{{ i.collaborators }}</td>
-        </tr>
-        <tr>
-            <th>Is finished</th>
-            <td>{% if i.is_finished %}It is finished{% else %}It isn't finished{% endif %}</td>
-        </tr>
-        </tbody>
-    </table>
-{% endfor %}
+            {% if user.id == 1 or user.id == i.team_leader %}
+                <tr>
+                    <th>Edit/Delete</th>
+                    <td><a href='{{ url_for('editjob', job_id=i.id) }}' class="btn btn-secondary">Изменить</a><a
+                            href='{{ url_for('deletejob', job_id=i.id) }}' class="btn btn-secondary">Удалить</a></td>
+                </tr>
+            {% endif %}
+            <tr>
+                <th>Team leader</th>
+                <td>{% if i.user %}{{ i.user.name }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Duration</th>
+                <td>{{ i.work_size }} hours</td>
+            </tr>
+            <tr>
+                <th>List of collaborators</th>
+                <td>{{ i.collaborators }}</td>
+            </tr>
+            <tr>
+                <th>Is finished</th>
+                <td>{% if i.is_finished %}It is finished{% else %}It isn't finished{% endif %}</td>
+            </tr>
+            </tbody>
+        </table>
+    {% endfor %}
 {% endblock %}
