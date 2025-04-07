@@ -49,6 +49,13 @@ class AddJobForm(FlaskForm):
     is_finished = BooleanField('Работа закончена?')
     submit = SubmitField('Завершить')
 
+class AddDepartmentForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    chief = IntegerField('Chief', validators=[DataRequired()])
+    members = StringField('Members', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired()])
+    submit = SubmitField('Finish')
+
 
 @app.route('/')
 def home():
@@ -112,8 +119,7 @@ def login():
 
 @app.route('/addjob', methods=['GET', 'POST'])
 def addjob():
-    global username
-    if not username:
+    if not current_user.is_authenticated:
         return redirect('/login')
     form = AddJobForm()
     if form.validate_on_submit():
@@ -163,6 +169,21 @@ def department():
         return redirect('/login')
     departments = session.query(Department).all()
     return render_template('departments.html', username=username, departments_list=departments, user=current_user)
+
+
+@app.route('/adddepartment', methods=['GET', 'POST'])
+def adddepartment():
+    if not current_user.is_authenticated:
+        return redirect('/login')
+    form = AddDepartmentForm()
+    if form.validate_on_submit():
+        new_department = Department(title=form.title.data, chief=form.chief.data, members=form.members.data, email=form.email.data)
+        session.add(new_department)
+        session.commit()
+        return redirect('/departments')
+    return render_template('adddepartment.html', username=username, form=form, user=current_user)
+
+
 
 
 if __name__ == '__main__':
