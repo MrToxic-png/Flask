@@ -130,6 +130,8 @@ def editjob(job_id):
     jobs = session.query(Jobs).filter(Jobs.id == job_id).first()
     if not jobs:
         return redirect('/')
+    if jobs.team_leader != current_user.id and current_user.id != 1:
+        return redirect('/')
     if form.validate_on_submit():
         jobs.job = form.job.data
         jobs.team_leader = form.team_lead.data
@@ -143,7 +145,15 @@ def editjob(job_id):
 
 @app.route('/deletejob/<int:job_id>', methods=['GET', 'POST'])
 def deletejob(job_id):
-    pass
+    jobs = session.query(Jobs).filter(Jobs.id == job_id).first()
+    if not jobs:
+        return redirect('/')
+    if jobs.team_leader != current_user.id and current_user.id != 1:
+        return redirect('/')
+    session.delete(jobs)
+    session.commit()
+    return redirect('/')
+
 
 
 if __name__ == '__main__':
