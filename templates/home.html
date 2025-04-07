@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
     <h2>Works log</h2>
+    {% if user.is_authenticated %}
+        <h4><a href='/addjob' class="btn btn-secondary">Add job</a></h4>
+    {% endif %}
     {% for i in jobs %}
         <table class="table">
             <tbody>
@@ -11,8 +14,8 @@
             {% if user.id == 1 or user.id == i.team_leader %}
                 <tr>
                     <th>Edit/Delete</th>
-                    <td><a href='{{ url_for('editjob', job_id=i.id) }}' class="btn btn-warning">Изменить</a>   <a
-                            href='{{ url_for('deletejob', job_id=i.id) }}' class="btn btn-danger">Удалить</a></td>
+                    <td><a href='{{ url_for('editjob', job_id=i.id) }}' class="btn btn-warning">Edit</a>   <a
+                            href='{{ url_for('deletejob', job_id=i.id) }}' class="btn btn-danger">Delete</a></td>
                 </tr>
             {% endif %}
             <tr>

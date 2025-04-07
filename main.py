@@ -52,7 +52,7 @@ class AddJobForm(FlaskForm):
 @app.route('/')
 def home():
     global username
-    if current_user.is_authenticated:
+    if current_user.is_authenticated and username:
         jobs = session.query(Jobs).all()
         return render_template('home.html', username=username, jobs=jobs, user=current_user)
     else:
