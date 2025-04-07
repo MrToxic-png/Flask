@@ -184,6 +184,26 @@ def adddepartment():
     return render_template('adddepartment.html', username=username, form=form, user=current_user)
 
 
+@app.route('/editdepartment/<int:department_id>', methods=['GET', 'POST'])
+def editdepartment(department_id):
+    form = AddDepartmentForm()
+    departments = session.query(Department).filter(Department.id == department_id).first()
+    if not departments:
+        return redirect('/')
+    if departments.chief != current_user.id and current_user.id != 1:
+        return redirect('/')
+    if form.validate_on_submit():
+        departments.title = form.title.data
+        departments.chief = form.chief.data
+        departments.members = form.members.data
+        departments.email = form.email.data
+        session.commit()
+        return redirect('/departments')
+
+    return render_template('editdepartment.html', username=username, form=form, user=current_user)
+
+
+
 
 
 if __name__ == '__main__':
