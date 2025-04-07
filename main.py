@@ -5,6 +5,7 @@ from wtforms import StringField, PasswordField, IntegerField, SubmitField, Email
 from wtforms.validators import DataRequired, EqualTo, Email
 from flask_login import LoginManager, login_user, current_user, logout_user
 
+from data.departament import Department
 from data.jobs import Jobs
 from data.users import User
 from data import db_session
@@ -143,6 +144,7 @@ def editjob(job_id):
 
     return render_template('editjob.html', username=username, form=form, user=current_user)
 
+
 @app.route('/deletejob/<int:job_id>', methods=['GET', 'POST'])
 def deletejob(job_id):
     jobs = session.query(Jobs).filter(Jobs.id == job_id).first()
@@ -154,6 +156,13 @@ def deletejob(job_id):
     session.commit()
     return redirect('/')
 
+
+@app.route('/departments')
+def department():
+    if not current_user.is_authenticated:
+        return redirect('/login')
+    departments = session.query(Department).all()
+    return render_template('departments.html', username=username, departments_list=departments, user=current_user)
 
 
 if __name__ == '__main__':

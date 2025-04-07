@@ -2,7 +2,7 @@
 {% block content %}
     <h2>Works log</h2>
     {% if user.is_authenticated %}
-        <h4><a href='/addjob' class="btn btn-secondary">Add job</a></h4>
+        <h4><a href='/addjob' class="btn btn-secondary">Add job</a>   <a href="/departments" class="btn btn-secondary">-> departments</a></h4>
     {% endif %}
     {% for i in jobs %}
         <table class="table">
