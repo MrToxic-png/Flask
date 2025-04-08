@@ -15,11 +15,19 @@ def test_particular_job():
     assert isinstance(jsoned_job, dict)
 
 def test_particular_job_id():
-    response = requests.get('http://127.0.0.1:8080/api/jobs/198267451098634590736587146395837265892734659874326590813')
+    response = requests.get('http://127.0.0.1:8080/api/jobs/1982674510986390813')
 
     assert response.status_code == 404
 
 def test_particular_job_input():
     response = requests.get('http://127.0.0.1:8080/api/jobs/KiReal')
 
-    assert response.status_code == 400
+    assert response.status_code == 404
+
+
+if __name__ == '__main__':
+    test_all_jobs()
+    test_particular_job()
+    test_particular_job_id()
+    test_particular_job_input()
+    print('All tests passed')

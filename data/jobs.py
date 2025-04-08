@@ -1,6 +1,5 @@
 import sqlalchemy
 import sqlalchemy.orm as orm
-
 from .db_session import SqlAlchemyBase
 
 from .users import User
