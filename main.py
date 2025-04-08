@@ -10,6 +10,7 @@ from data.jobs import Jobs
 from data.users import User
 from data.categories import Category
 from data import db_session
+from data import jobs_api
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -222,4 +223,5 @@ def deletedepartment(department_id):
 
 
 if __name__ == '__main__':
+    app.register_blueprint(jobs_api.blueprint)
     app.run('127.0.0.1', port=8080)
