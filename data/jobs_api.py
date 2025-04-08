@@ -61,13 +61,12 @@ def create_jobs():
                  ['team_leader', 'job', 'is_finished', 'work_size', 'collaborators']):
         return make_response(jsonify({'error': 'Bad request'}), 400)
     type_conditions = (isinstance(request.json.get('job'), str),
-                      isinstance(request.json.get('team_leader'), int),
-                      isinstance(request.json.get('work_size'), int),
-                      isinstance(request.json.get('collaborators'), str),
-                      isinstance(request.json.get('is_finished'), bool))
+                       isinstance(request.json.get('team_leader'), int),
+                       isinstance(request.json.get('work_size'), int),
+                       isinstance(request.json.get('collaborators'), str),
+                       isinstance(request.json.get('is_finished'), bool))
     if not all(type_conditions):
         abort(400)
-    db_sess = db_session.create_session()
     jobs = Jobs(
         team_leader=request.json['team_leader'],
         job=request.json['job'],
@@ -75,6 +74,16 @@ def create_jobs():
         work_size=request.json['work_size'],
         collaborators=request.json['collaborators']
     )
-    db_sess.add(jobs)
-    db_sess.commit()
+    session.add(jobs)
+    session.commit()
     return jsonify({'id': jobs.id})
+
+
+@blueprint.route('/api/jobs/<int:job_id>', methods=['DELETE'])
+def delete_news(job_id):
+    job = session.get(Jobs, job_id)
+    if job is None:
+        abort(404)
+    session.delete(job)
+    session.commit()
+    return jsonify({'success': 'OK'})
