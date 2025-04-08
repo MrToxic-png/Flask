@@ -25,3 +25,17 @@ def get_jobs():
         list_of_dicts.append(dict_of_jobs)
 
     return jsonify(list_of_dicts)
+
+
+@blueprint.route('/api/jobs/<int:job_id>')
+def get_particular_jobs(job_id):
+    job = session.query(Jobs).filter_by(id=job_id).first()
+    if job:
+        dict_of_jobs = {'id': job.id, 'team_leader': job.team_leader, 'job': job.job, 'category': job.category,
+                        'is_finished': job.is_finished, 'work_size': job.work_size, 'collaborators': job.collaborators,
+                        'start_date': job.start_date, 'end_date': job.end_date}
+
+
+        return jsonify([dict_of_jobs])
+    else:
+        return jsonify({'message': 'Job not found'})
