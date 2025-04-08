@@ -29,6 +29,8 @@ def get_jobs():
 
 @blueprint.route('/api/jobs/<int:job_id>')
 def get_particular_jobs(job_id):
+    if type(job_id) is not int:
+        return jsonify({'error': 'Invalid job id'})
     job = session.query(Jobs).filter_by(id=job_id).first()
     if job:
         dict_of_jobs = {'id': job.id, 'team_leader': job.team_leader, 'job': job.job, 'category': job.category,
