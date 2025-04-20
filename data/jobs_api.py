@@ -87,3 +87,27 @@ def delete_news(job_id):
     session.delete(job)
     session.commit()
     return jsonify({'success': 'OK'})
+
+
+@blueprint.route('/api/jobs/<int:job_id>', methods=['PUT'])
+def edit_job(job_id):
+    if not request.json:
+        return make_response(jsonify({'error': 'Empty request'}), 400)
+    elif not all(key in request.json for key in
+                 ['team_leader', 'job', 'is_finished', 'work_size', 'collaborators']):
+        return make_response(jsonify({'error': 'Bad request'}), 400)
+    type_conditions = (isinstance(request.json.get('job'), str),
+                       isinstance(request.json.get('team_leader'), int),
+                       isinstance(request.json.get('work_size'), int),
+                       isinstance(request.json.get('collaborators'), str),
+                       isinstance(request.json.get('is_finished'), bool))
+    if not all(type_conditions):
+        abort(400)
+    changing_job = session.query(Jobs).filter_by(id=job_id).first()
+    changing_job.team_leader = request.json['team_leader']
+    changing_job.job = request.json['job']
+    changing_job.is_finished = request.json['is_finished']
+    changing_job.work_size = request.json['work_size']
+    changing_job.collaborators = request.json['collaborators']
+    session.commit()
+    return jsonify({'id': job_id})
